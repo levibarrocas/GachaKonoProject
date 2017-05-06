@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerParty : MonoBehaviour {
-    CharacterManager CM;
+// THIS CODE IS DEPRECATED IT'S FUNCTION WILL BE DONE IN THE CHARACTER MANAGER
+
     [SerializeField]
-    Character[] Party = new Character[4];
-	// Use this for initialization
+    public Character[] Party = new Character[4];
 	void Start () {
-        CM = GetComponent<CharacterManager>();
 	}
 	
 	// Update is called once per frame

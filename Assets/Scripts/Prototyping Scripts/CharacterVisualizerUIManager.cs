@@ -77,7 +77,7 @@ public class CharacterVisualizerUIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		SlotButtonPressed (0);
 	}
 
     public void AttackSlotButtonPressed(int SlotNumber)
@@ -85,10 +85,14 @@ public class CharacterVisualizerUIManager : MonoBehaviour {
         AttackDescription.text = CM.CharacterLibrary[CharacterSlotSelected].Attacks[SlotNumber].Descricao;
     }
 
+	public void AddToPartyButton(int slot){
+		CM.AddToPartyFromLibrary (CharacterSlotSelected);
+	}
+
     public void SlotButtonPressed(int SlotNumber)
     {
         CharacterSlotSelected = SlotNumber;
-        NomeDoPersonagem.text = CM.CharacterLibrary[SlotNumber].Nome;
+        NomeDoPersonagem.text = CM.CharacterLibrary[SlotNumber].Nome();
         DescricaoDoPersonagem.text = CM.CharacterLibrary[SlotNumber].Descricao;
         RacaDoPersonagem.text = CM.CharacterLibrary[SlotNumber].Raca;
 

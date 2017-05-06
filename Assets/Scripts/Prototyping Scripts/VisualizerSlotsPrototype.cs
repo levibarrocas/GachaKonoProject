@@ -21,7 +21,7 @@ public class VisualizerSlotsPrototype : MonoBehaviour {
         {
            if (i < CM.CharacterLibrary.Length)
             {
-                SlotText[i].text = CM.CharacterLibrary[i].Nome;
+                SlotText[i].text = CM.CharacterLibrary[i].Nome();
             }
 
             if(i >= CM.CharacterLibrary.Length)
