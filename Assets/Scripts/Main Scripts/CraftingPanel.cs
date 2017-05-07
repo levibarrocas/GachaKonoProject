@@ -87,6 +87,7 @@ public class CraftingPanel : MonoBehaviour
         {
             Character CHA = new Character();
             CHA.CloneAnotherCharacter(CM.CharacterLibrary[SelectedSlot]);
+
             CHA.GenerateRarity(ExtraPoints);
 
             CM.AddCharacterToInventory(CHA);

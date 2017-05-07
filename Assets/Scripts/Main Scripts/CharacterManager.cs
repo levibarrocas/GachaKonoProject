@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class CharacterManager : MonoBehaviour {
     // THIS CODE IS A GENERAL MANAGER FOR EVERYTHING THAT INVOLVES CHARACTERS IT SHOULD STORE THE PARTY,INVENTORY AND LIBRARY WITH ALL CHARACTERS
@@ -14,6 +16,7 @@ public class CharacterManager : MonoBehaviour {
     public Party PlayerParty = new Party();
 
     public Party R1;
+
 
     // Use this for initialization
     void Start () {
@@ -194,6 +197,7 @@ public class Character
     public int Level = 1;
 
     public int NextLevelCost = 5;
+    public ColorBlock Colors;
 
 
     [Header("Rarity Flavours")]

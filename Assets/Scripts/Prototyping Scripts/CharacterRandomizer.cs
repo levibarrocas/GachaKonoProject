@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterRandomizer : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class CharacterRandomizer : MonoBehaviour {
     List<Character> Legendaries = new List<Character>();
 
     CharacterManager CM;
+
+    public ColorBlock[] ColorBlocks;
 
     // This script should generate a random character with a 4 tiered rarity,using 4 different arrays each for a different rarity
 
@@ -59,18 +62,22 @@ public class CharacterRandomizer : MonoBehaviour {
                 if (CharacterLibrary[i].Rarity == 0)
                 {
                     Commons.Add(CharacterLibrary[i]);
+                    CharacterLibrary[i].Colors = ColorBlocks[0];
                 }
                 if (CharacterLibrary[i].Rarity == 1)
                 {
                     Rares.Add(CharacterLibrary[i]);
+                    CharacterLibrary[i].Colors = ColorBlocks[1];
                 }
                 if (CharacterLibrary[i].Rarity == 2)
                 {
                     Epics.Add(CharacterLibrary[i]);
+                    CharacterLibrary[i].Colors = ColorBlocks[2];
                 }
                 if (CharacterLibrary[i].Rarity == 3)
                 {
                     Legendaries.Add(CharacterLibrary[i]);
+                    CharacterLibrary[i].Colors = ColorBlocks[3];
                 }
             }
         }

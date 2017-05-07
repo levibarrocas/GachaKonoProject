@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventorySlotButton : MonoBehaviour {
+public class CraftingSlotButton : MonoBehaviour
+{
 
     public int Slot;
 
     public Text ButtonText;
     public Button ThisButton;
-    public InventoryPanel IP;
+    public CraftingPanel IP;
     public Image AvatarImage;
-    
 
 
 
@@ -20,7 +20,7 @@ public class InventorySlotButton : MonoBehaviour {
         ThisButton = GetComponent<Button>();
         ButtonText = GetComponentInChildren<Text>();
         ThisButton.onClick.AddListener(TaskOnClick);
-        IP = GetComponentInParent<InventoryPanel>();
+        IP = GetComponentInParent<CraftingPanel>();
         AvatarImage = GetComponentsInChildren<Image>()[1];
     }
 
@@ -28,7 +28,7 @@ public class InventorySlotButton : MonoBehaviour {
     {
 
         ThisButton.colors = CHA.Colors;
-        ButtonText.text = CHA.Nome();
+        ButtonText.text = CHA.Nome(1);
         AvatarImage.sprite = CHA.Image;
 
     }
