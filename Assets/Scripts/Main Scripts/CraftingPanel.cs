@@ -22,6 +22,11 @@ public class CraftingPanel : MonoBehaviour
         FillOutCosts();
     }
 
+    private void Update()
+    {
+        if (Input.GetKey("n")) { DebugCrafting(); }
+    }
+
     void FillOutCosts()
     {
         for(int i = 0;i < CraftingCosts.Length;i++)
@@ -80,16 +85,22 @@ public class CraftingPanel : MonoBehaviour
         
     }
 
+    public void DebugCrafting()
+    {
+        Character CHA = new Character();
+        int R = Random.Range(0, CM.CharacterLibrary.Length);
+        CHA.CloneAnotherCharacter(CM.CharacterLibrary[R]);
+
+        CHA.GenerateRarity(ExtraPoints);
+        CM.AddCharacterToInventory(CHA);
+    }
+
     public void CraftACharacter()
     {
 
         if (MoneyManager.MM.SpendDust(CraftingCost))
         {
-            Character CHA = new Character();
-            CHA.CloneAnotherCharacter(CM.CharacterLibrary[SelectedSlot]);
-
-            CHA.GenerateRarity(ExtraPoints);
-
+            Character CHA = CM.GenerateCharacter(SelectedSlot, ExtraPoints);
             CM.AddCharacterToInventory(CHA);
             StaticReferences.LogText.LogWarning("You spent " + CraftingCost + " to craft " + CHA.Nome() + " with a rarity level of " + CHA.ExtraRarity);
         }

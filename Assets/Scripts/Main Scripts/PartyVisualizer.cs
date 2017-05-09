@@ -16,6 +16,8 @@ public class PartyVisualizer : MonoBehaviour {
     GameObject RemoveParty;
     [SerializeField]
     GameObject EnpowerParty;
+    [SerializeField]
+    GameObject TestBattle;
 
 
 
@@ -33,11 +35,13 @@ public class PartyVisualizer : MonoBehaviour {
             VisualizeButton.SetActive(true);
             RemoveParty.SetActive(true);
             EnpowerParty.SetActive(true);
+            TestBattle.SetActive(true);
             } else
             {
             VisualizeButton.SetActive(false);
             RemoveParty.SetActive(false);
             EnpowerParty.SetActive(false);
+            TestBattle.SetActive(false);
             }
 
         for(int i = 0;i < Buttons.Length; i++)

@@ -24,9 +24,12 @@ public class CharacterManager : MonoBehaviour {
         ResetCharacters(CharacterLibrary);
 	}
 	
-    public void AddCharacterToInventory(Character CHA)
+    public bool AddCharacterToInventory(Character CHA)
     {
-        bool RepeatedTest = false;
+        if (CharacterInventory.Count < 70)
+        {
+
+            bool RepeatedTest = false;
             for (int i = 0; i < CharacterInventory.Count; i++)
             {
                 if (CharacterInventory[i] == CHA)
@@ -34,37 +37,53 @@ public class CharacterManager : MonoBehaviour {
                     RepeatedTest = true;
                 }
             }
-        if(!RepeatedTest)
-        {
-            CharacterInventory.Add(CHA);
-            LogText.LT.addToLogText("Added " + CHA.Nome() + " to the character inventory");
-            
+            if (!RepeatedTest)
+            {
+                CharacterInventory.Add(CHA);
+                LogText.LT.addToLogText("Added " + CHA.Nome() + " to the character inventory");
+                return true;
+
+            }
+            else
+            {
+                if (CHA.Rarity == 0)
+                {
+                    MoneyManager.MM.GainCredits(5);
+                }
+                if (CHA.Rarity == 1)
+                {
+                    MoneyManager.MM.GainCredits(20);
+                }
+                if (CHA.Rarity == 2)
+                {
+                    MoneyManager.MM.GainCredits(100);
+                }
+                if (CHA.Rarity == 3)
+                {
+                    MoneyManager.MM.GainCredits(400);
+                }
+
+                LogText.LT.LogWarning("Repeated character " + CHA.Nome() + " added rewarded credits according to rarity");
+                return true;
+            }
         } else
         {
-            if(CHA.Rarity == 0)
-            {
-                MoneyManager.MM.GainCredits(5);
-            }
-            if (CHA.Rarity == 1)
-            {
-                MoneyManager.MM.GainCredits(20);
-            }
-            if (CHA.Rarity == 2)
-            {
-                MoneyManager.MM.GainCredits(100);
-            }
-            if (CHA.Rarity == 3)
-            {
-                MoneyManager.MM.GainCredits(400);
-            }
-
-            LogText.LT.LogWarning("Repeated character " + CHA.Nome() + " added rewarded credits according to rarity");
+            LogText.LT.LogWarning("Inventory is full!");
+            return false;
         }
-
     }
 
-	// Update is called once per frame
-	void Update () {
+    public Character GenerateCharacter(int LibrarySlot,int ExtraPoints)
+    {
+        Character CHA = new Character();
+        CHA.CloneAnotherCharacter(CharacterLibrary[LibrarySlot]);
+
+        CHA.GenerateRarity(ExtraPoints);
+        return CHA;
+    }
+
+    // Update is called once per frame
+    void Update () {
     //    TurnCharger();
         if(Input.GetKeyDown("space"))
         {
@@ -75,6 +94,12 @@ public class CharacterManager : MonoBehaviour {
 
     }
 
+    public void TestBattle()
+    {
+        R1.RandomParty();
+
+        StaticReferences.BM.SetupBattle(R1);
+    }
 
     void ResetCharacters(Character[] Characters)
     {
@@ -479,6 +504,8 @@ public class Character
         Raca = CHA.Raca;
         Classe = CHA.Classe;
         Level = 1;
+
+        Colors = CHA.Colors;
 
         Attacks[0] = CHA.Attacks[0];
         Attacks[1] = CHA.Attacks[1];

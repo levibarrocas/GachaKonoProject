@@ -35,20 +35,12 @@ public class CharacterRandomizer : MonoBehaviour {
         CM = GetComponent<CharacterManager>();
         FillOutRarities();
     }
-    // This command is purely for debugging porpuses right now and should not be used in the final version without major modifications.
 
-    private void ToInventoryTest()
-    {
 
-        CM.AddCharacterToInventory(BasicRandomCharacter());
-    }
+
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            ToInventoryTest();
-        }
     }
 
     void FillOutRarities()

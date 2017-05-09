@@ -9,6 +9,10 @@ public class InventoryPanel : MonoBehaviour {
     GameObject VisualizeButton;
     [SerializeField]
     GameObject AddToPartyButton;
+    [SerializeField]
+    GameObject EmptySign;
+    [SerializeField]
+    GameObject InventoryView;
 
     public int SelectedSlot;
     int Reward = 5;
@@ -53,8 +57,12 @@ public class InventoryPanel : MonoBehaviour {
             DeleteButton.SetActive(true);
             VisualizeButton.SetActive(true);
             AddToPartyButton.SetActive(true);
+            EmptySign.SetActive(false);
+            InventoryView.SetActive(true);
         } else
         {
+            InventoryView.SetActive(false);
+            EmptySign.SetActive(true);
             DeleteButton.SetActive(false);
             VisualizeButton.SetActive(false);
             AddToPartyButton.SetActive(false);

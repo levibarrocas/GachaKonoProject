@@ -15,7 +15,7 @@ public class BattleManager : MonoBehaviour {
     GameObject AttackPanel;
     [SerializeField]
     GameObject TargetPanel;
-
+    [SerializeField]
     Attack ActiveAttack;
 
     [SerializeField]
@@ -43,6 +43,7 @@ public class BattleManager : MonoBehaviour {
                     else
                     {
                         ActiveCharacter = PlayerParty.Slot(i);
+                        ActiveCharacter.Ready = true;
                         AttackPanel.SetActive(true);
                         Title.text = ActiveCharacter.Nome(1) + " is ready to attack!";
                         Avatar.sprite = ActiveCharacter.Image;
@@ -64,4 +65,20 @@ public class BattleManager : MonoBehaviour {
         ActiveAttack = ActiveCharacter.Attacks[Slot];
     }
 
+    public void TargetEnemyPanelButton(int Slot)
+    {
+        TargetPanel.SetActive(false);
+        ActiveAttack.doAttack(ActiveCharacter, EnemyParty.PartyCharacters[Slot]);
+        ActiveCharacter.TurnCharge = 0;
+        ActiveCharacter.Ready = false;
+        TurnActive = false;
+    }
+    public void TargetAllyPanelButton(int Slot)
+    {
+        TargetPanel.SetActive(false);
+        ActiveAttack.doAttack(ActiveCharacter, PlayerParty.PartyCharacters[Slot]);
+        ActiveCharacter.TurnCharge = 0;
+        ActiveCharacter.Ready = false;
+        TurnActive = false;
+    }
 }
