@@ -48,13 +48,10 @@ public class PartyVisualizer : MonoBehaviour {
         {
             if(i < CM.PlayerParty.Ammount())
             {
-                Buttons[i].gameObject.SetActive(true);
-                
-                Buttons[i].CharacterImage.sprite = CM.PlayerParty.Slot(i).Image;
-                Buttons[i].ButtonText.text = CM.PlayerParty.Slot(i).Nome(1);
+                Buttons[i].SetButtonInfo(CM.PlayerParty.Slot(i));
             } else
             {
-                Buttons[i].gameObject.SetActive(false);
+                Buttons[i].DisableButton();
 
             }
 

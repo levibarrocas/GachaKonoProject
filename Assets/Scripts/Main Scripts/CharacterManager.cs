@@ -232,8 +232,12 @@ public class Character
     public Sprite ImageCommon;
     public Sprite ImageRare;
     public Sprite ImageLegendary;
+    public Sprite WallpaperCommon;
+    public Sprite WallpaperRare;
+    public Sprite WallpaperLegendary;
 
     public Sprite Image;
+    public Sprite Wallpaper;
 
     [Header("Stats")]
     [SerializeField]
@@ -379,11 +383,13 @@ public class Character
             {
                 Titulo = CommonTitle;
             Image = ImageCommon;
+            Wallpaper = WallpaperCommon;
         }
             else if (r1 < RarityLevel2)
             {
             Image = ImageRare;
-                ExtraRarity++;
+            Wallpaper = WallpaperRare;
+            ExtraRarity++;
                 Titulo = RareTitle;
                 Stats.BaseCarisma += Random.Range(1, 5);
                 Stats.BaseConstituicao += Random.Range(1, 5);
@@ -396,7 +402,8 @@ public class Character
             else if (r1 < 101)
             {
             Image = ImageLegendary;
-                ExtraRarity += 2;
+            Wallpaper = WallpaperLegendary;
+            ExtraRarity += 2;
                 Titulo = LegendaryTitle;
                 Stats.BaseCarisma += Random.Range(3, 10);
                 Stats.BaseConstituicao += Random.Range(3, 10);
@@ -519,6 +526,9 @@ public class Character
         ImageLegendary = CHA.ImageLegendary;
         ImageCommon = CHA.ImageCommon;
         ImageRare = CHA.ImageRare;
+        WallpaperLegendary = CHA.WallpaperLegendary;
+        WallpaperCommon = CHA.WallpaperCommon;
+        WallpaperRare = CHA.WallpaperRare;
         MaxHP = CHA.MaxHP;
         MaxSP = CHA.MaxSP;
         BaseSpeed = CHA.BaseSpeed;

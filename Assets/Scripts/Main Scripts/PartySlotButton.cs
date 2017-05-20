@@ -14,5 +14,17 @@ public class PartySlotButton : MonoBehaviour {
         
     }
 
+    public void SetButtonInfo(Character CHA)
+    {
+        gameObject.SetActive(true);
+        CharacterImage.sprite = CHA.Wallpaper;
+        ButtonText.text = CHA.Nome(3);
+    }
+
+    public void DisableButton()
+    {
+        gameObject.SetActive(false);
+    }
+
 }
 

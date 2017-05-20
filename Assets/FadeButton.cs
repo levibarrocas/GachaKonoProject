@@ -7,9 +7,6 @@ public class FadeButton : MonoBehaviour {
 
     Button BTN;
     [SerializeField]
-    Image IMG;
-    CanvasRenderer CR;
-    [SerializeField]
     GameObject CanvasMain;
     [SerializeField]
     GameObject StartingCanvas;
@@ -22,7 +19,6 @@ public class FadeButton : MonoBehaviour {
 	void Start () {
         BTN = GetComponent<Button>();
         BTN.onClick.AddListener(OnClick);
-        CR = IMG.GetComponent<CanvasRenderer>();
 	}
 	
 	// Update is called once per frame
