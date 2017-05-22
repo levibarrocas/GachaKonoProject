@@ -32,7 +32,7 @@ public class CharacterRandomizer : MonoBehaviour {
 
     private void Start()
     {
-        CM = GetComponent<CharacterManager>();
+        CM = CharacterManager.CM;
         FillOutRarities();
     }
 
@@ -54,22 +54,22 @@ public class CharacterRandomizer : MonoBehaviour {
                 if (CharacterLibrary[i].Rarity == 0)
                 {
                     Commons.Add(CharacterLibrary[i]);
-                    CharacterLibrary[i].Colors = ColorBlocks[0];
+                    //CharacterLibrary[i].Colors = ColorBlocks[0];
                 }
                 if (CharacterLibrary[i].Rarity == 1)
                 {
                     Rares.Add(CharacterLibrary[i]);
-                    CharacterLibrary[i].Colors = ColorBlocks[1];
+                    //CharacterLibrary[i].Colors = ColorBlocks[1];
                 }
                 if (CharacterLibrary[i].Rarity == 2)
                 {
                     Epics.Add(CharacterLibrary[i]);
-                    CharacterLibrary[i].Colors = ColorBlocks[2];
+                    //CharacterLibrary[i].Colors = ColorBlocks[2];
                 }
                 if (CharacterLibrary[i].Rarity == 3)
                 {
                     Legendaries.Add(CharacterLibrary[i]);
-                    CharacterLibrary[i].Colors = ColorBlocks[3];
+                    //CharacterLibrary[i].Colors = ColorBlocks[3];
                 }
             }
         }
@@ -92,6 +92,7 @@ public class CharacterRandomizer : MonoBehaviour {
         else if (r < 95)
         {
             int n = Random.Range(0, Epics.Count);
+
             return Epics[n];
         }
         else if (r <= 100)
@@ -99,6 +100,53 @@ public class CharacterRandomizer : MonoBehaviour {
             int n = Random.Range(0, Legendaries.Count);
             return Legendaries[n];
         } else
+        {
+            return Commons[0];
+        }
+    }
+
+    public Character BasicRandomCollectionCharacter(int Collection)
+    {
+        float r = Random.Range(1, 100);
+
+        if (r < 50)
+        {
+            int n = Random.Range(0, Commons.Count);
+            while (Commons[n].Collection != Collection)
+            {
+                n = Random.Range(0, Commons.Count);
+            }
+            return Commons[n];
+        }
+        else if (r < 80)
+        {
+            int n = Random.Range(0, Rares.Count);
+            while (Rares[n].Collection != Collection)
+            {
+                n = Random.Range(0, Rares.Count);
+            }
+            return Rares[n];
+        }
+        else if (r < 95)
+        {
+            int n = Random.Range(0, Epics.Count);
+            while (Epics[n].Collection != Collection)
+            {
+                n = Random.Range(0, Epics.Count);
+            }
+            return Epics[n];
+
+        }
+        else if (r <= 100)
+        {
+            int n = Random.Range(0, Legendaries.Count);
+            while (Legendaries[n].Collection != Collection)
+            {
+                n = Random.Range(0, Legendaries.Count);
+            }
+            return Legendaries[n];
+        }
+        else
         {
             return Commons[0];
         }

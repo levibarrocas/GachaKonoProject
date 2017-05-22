@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using System.Runtime.Serialization;
 
 
 public class CharacterManager : MonoBehaviour {
@@ -11,17 +14,39 @@ public class CharacterManager : MonoBehaviour {
     // A old version of the party sytem
     public Character[] Party = new Character[4];
     // The player inventory
+
     public List<Character> CharacterInventory = new List<Character>();
-    // The new party system
+
     public Party PlayerParty = new Party();
 
     public Party R1;
+   [SerializeField]
+    bool testesave;
+    [SerializeField]
+    bool testeload;
 
+    public static CharacterManager CM;
 
-    // Use this for initialization
+    private void Awake()
+    {
+        if(CM == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            CM = this;
+        } else if (CM != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start () {
         
         ResetCharacters(CharacterLibrary);
+
+        for(int i = 0;i < CharacterLibrary.Length; i++)
+        {
+            CharacterLibrary[i].OriginalSlot = i;
+        }
 	}
 	
     public bool AddCharacterToInventory(Character CHA)
@@ -41,6 +66,7 @@ public class CharacterManager : MonoBehaviour {
             {
                 CharacterInventory.Add(CHA);
                 LogText.LT.addToLogText("Added " + CHA.Nome() + " to the character inventory");
+                SavingManager.SM.Save();
                 return true;
 
             }
@@ -64,6 +90,7 @@ public class CharacterManager : MonoBehaviour {
                 }
 
                 LogText.LT.LogWarning("Repeated character " + CHA.Nome() + " added rewarded credits according to rarity");
+                SavingManager.SM.Save();
                 return true;
             }
         } else
@@ -82,7 +109,69 @@ public class CharacterManager : MonoBehaviour {
         return CHA;
     }
 
-    // Update is called once per frame
+    public void SaveCharacters()
+    {
+        if (File.Exists(Application.persistentDataPath + "/characters.dat"))
+        {
+            File.Delete(Application.persistentDataPath + "/characters.dat");
+        }
+        SerializableCharacters Characters = new SerializableCharacters();
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/characters.dat", FileMode.Create);
+        for (int i = 0; i < CharacterInventory.Count; i++)
+        {
+            SerializableCharacter Test = new SerializableCharacter();
+            Test.SerializeCharacter(CharacterInventory[i]);
+            Characters.CharacterInventory.Add(Test);
+        }
+        for (int i = 0; i < PlayerParty.PartyCharacters.Count; i++)
+        {
+            SerializableCharacter Test = new SerializableCharacter();
+            Test.SerializeCharacter(PlayerParty.PartyCharacters[i]);
+            Characters.Party.Add(Test);
+        }
+        bf.Serialize(file, Characters);
+        file.Close();
+    }
+    public void LoadCharacters()
+    {
+        CharacterInventory.Clear();
+        PlayerParty.PartyCharacters.Clear();
+        int slot = 0;
+        if (File.Exists(Application.persistentDataPath + "/characters.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/characters.dat", FileMode.Open);
+            SerializableCharacters CHAS = (SerializableCharacters)bf.Deserialize(file);
+            for(int i = 0;i < CHAS.Party.Count; i++)
+            {
+                PlayerParty.AddToParty(CHAS.Party[i].UnSerializeCharacter());
+            }
+            for (int i = 0; i < CHAS.CharacterInventory.Count; i++)
+            {
+                CharacterInventory.Add(CHAS.CharacterInventory[i].UnSerializeCharacter());
+            }
+        }
+        //    while (File.Exists(Application.persistentDataPath + "/character" + slot + ".dat"))
+        //{
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    FileStream file = File.Open(Application.persistentDataPath + "/character" + slot + ".dat",FileMode.Open);
+        //    SerializableCharacter CHA = (SerializableCharacter)bf.Deserialize(file);
+        //    CharacterInventory.Add(CHA.UnSerializeCharacter());
+        //    file.Close();
+        //    slot++;
+        //}
+        //while (File.Exists(Application.persistentDataPath + "/partycharacter" + slot + ".dat"))
+        //{
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    FileStream file = File.Open(Application.persistentDataPath + "/partycharacter" + slot + ".dat", FileMode.Open);
+        //    SerializableCharacter CHA = (SerializableCharacter)bf.Deserialize(file);
+        //    PlayerParty.AddToParty(CHA.UnSerializeCharacter());
+        //    file.Close();
+        //    slot++;
+        //}
+    }
+
     void Update () {
     //    TurnCharger();
         if(Input.GetKeyDown("space"))
@@ -91,7 +180,16 @@ public class CharacterManager : MonoBehaviour {
 
             StaticReferences.BM.SetupBattle(R1);
         }
-
+        if (testeload)
+        {
+            LoadCharacters();
+            testeload = false;
+        }
+        if (testesave)
+        {
+            SaveCharacters();
+            testesave = false;
+        }
     }
 
     public void TestBattle()
@@ -222,22 +320,24 @@ public class Character
     public int Level = 1;
 
     public int NextLevelCost = 5;
-    public ColorBlock Colors;
+    //public ColorBlock Colors;
 
-
+    
     [Header("Rarity Flavours")]
     public string CommonTitle;
     public string RareTitle;
     public string LegendaryTitle;
+    public int TitleRarityID; 
     public Sprite ImageCommon;
     public Sprite ImageRare;
     public Sprite ImageLegendary;
     public Sprite WallpaperCommon;
     public Sprite WallpaperRare;
     public Sprite WallpaperLegendary;
-
     public Sprite Image;
     public Sprite Wallpaper;
+
+    public int Collection;
 
     [Header("Stats")]
     [SerializeField]
@@ -253,6 +353,8 @@ public class Character
     public int Speed;
     public int TurnCharge;
     public bool Ready;
+
+    public int OriginalSlot;
 
     [SerializeField]
     [Header("Attacks")]
@@ -273,10 +375,12 @@ public class Character
 
         if(r1 < 70)
         {
+            TitleRarityID = 0;
             Titulo = CommonTitle;
             Image = ImageCommon;
         }else if (r1 < 90)
         {
+            TitleRarityID = 1;
             Image = ImageRare;
             ExtraRarity++;
             Titulo = RareTitle;
@@ -290,6 +394,7 @@ public class Character
         }
         else if (r1 < 101)
         {
+            TitleRarityID = 2;
             Image = ImageLegendary;
             ExtraRarity += 2;
             Titulo = LegendaryTitle;
@@ -381,12 +486,14 @@ public class Character
 
             if (r1 < RarityLevel1)
             {
-                Titulo = CommonTitle;
+            TitleRarityID = 0;
+            Titulo = CommonTitle;
             Image = ImageCommon;
             Wallpaper = WallpaperCommon;
         }
             else if (r1 < RarityLevel2)
             {
+            TitleRarityID = 1;
             Image = ImageRare;
             Wallpaper = WallpaperRare;
             ExtraRarity++;
@@ -401,6 +508,7 @@ public class Character
             }
             else if (r1 < 101)
             {
+            TitleRarityID = 2;
             Image = ImageLegendary;
             Wallpaper = WallpaperLegendary;
             ExtraRarity += 2;
@@ -475,6 +583,11 @@ public class Character
             Vivo = false;
             HP = 0;
         }
+
+        if (AIControlled)
+        {
+            PlayerProfile.PP.TotalDamageTaken += Damage;
+        } else { PlayerProfile.PP.TotalDamageDone += Damage; }
     }
 
     public void Healing(int Heal)
@@ -484,11 +597,21 @@ public class Character
         {
             HP = MaxHP;
         }
-    }
+        if (!AIControlled)
+        {
+            PlayerProfile.PP.TotalDamageHealed += Heal;
+        }
+   }
 
     public void Revive(int Heal)
     {
         HP += Heal;
+
+        if (!AIControlled)
+        {
+            PlayerProfile.PP.TotalDamageHealed += Heal;
+        }
+
         Vivo = true;
     }
 
@@ -512,7 +635,7 @@ public class Character
         Classe = CHA.Classe;
         Level = 1;
 
-        Colors = CHA.Colors;
+        //Colors = CHA.Colors;
 
         Attacks[0] = CHA.Attacks[0];
         Attacks[1] = CHA.Attacks[1];
@@ -537,9 +660,11 @@ public class Character
         Image = CHA.Image;
         Descricao = CHA.Descricao;
         ResetStatsToBase();
-
+        OriginalSlot = CHA.OriginalSlot;
 
     }
+
+    
 
     public void ResetStatsToBase()
     {
@@ -557,6 +682,141 @@ public class Character
     }
 
 }
+[System.Serializable]
+public class SerializableCharacter
+{
+
+    public string BaseNome;
+    public string Titulo;
+    public string Descricao;
+    public string Sexo;
+    public string Raca;
+    public int RaceID;
+    public string Classe;
+    public int Level = 1;
+
+    public int NextLevelCost = 5;
+    public int OriginalSlot;
+    public int TitleRarityID;
+    public Stats Stats;
+
+    public bool Vivo = true;
+    public int HP;
+    public int MaxHP;
+    public int SP;
+    public int MaxSP;
+    public int BaseSpeed;
+    public int Speed;
+    public int TurnCharge;
+    public bool Ready;
+
+    public Attack[] Attacks = new Attack[4];
+
+    public int Rarity;
+    public int ExtraRarity;
+
+    public int Collection;
+
+    public void SerializeCharacter(Character CHA)
+    {
+        BaseNome = CHA.BaseNome;
+        Stats = new Stats();
+        Stats.BaseForca = CHA.Stats.BaseForca;
+        Stats.BaseCarisma = CHA.Stats.BaseCarisma;
+        Stats.BaseDextreza = CHA.Stats.BaseDextreza;
+        Stats.BaseInteligencia = CHA.Stats.BaseInteligencia;
+        Stats.BaseSabedoria = CHA.Stats.BaseSabedoria;
+        Stats.BaseSorte = CHA.Stats.BaseSorte;
+        Stats.BaseConstituicao = CHA.Stats.BaseConstituicao;
+        Raca = CHA.Raca;
+        Classe = CHA.Classe;
+        Level = CHA.Level;
+
+        OriginalSlot = CHA.OriginalSlot;
+
+        //Colors = CHA.Colors;
+        Collection = CHA.Collection;
+
+        TitleRarityID = CHA.TitleRarityID;
+        Attacks[0] = CHA.Attacks[0];
+        Attacks[1] = CHA.Attacks[1];
+        Attacks[2] = CHA.Attacks[2];
+        Attacks[3] = CHA.Attacks[3];
+
+        Rarity = CHA.Rarity;
+        MaxHP = CHA.MaxHP;
+        MaxSP = CHA.MaxSP;
+        BaseSpeed = CHA.BaseSpeed;
+        Speed = CHA.Speed;
+
+        Descricao = CHA.Descricao;
+
+
+    }
+
+    public Character UnSerializeCharacter()
+    {
+        Character UNCHA = new Character();
+        UNCHA.BaseNome = BaseNome;
+        UNCHA.Stats = new Stats();
+        UNCHA.Stats.BaseForca = Stats.BaseForca;
+        UNCHA.Stats.BaseCarisma = Stats.BaseCarisma;
+        UNCHA.Stats.BaseDextreza = Stats.BaseDextreza;
+        UNCHA.Stats.BaseInteligencia = Stats.BaseInteligencia;
+        UNCHA.Stats.BaseSabedoria =Stats.BaseSabedoria;
+        UNCHA.Stats.BaseSorte =Stats.BaseSorte;
+        UNCHA.Stats.BaseConstituicao =Stats.BaseConstituicao;
+        UNCHA.Raca =Raca;
+        UNCHA.Classe =Classe;
+        UNCHA.Level = Level;
+        UNCHA.OriginalSlot = OriginalSlot;
+        //Colors =Colors;
+
+        UNCHA.Collection = Collection;
+
+        UNCHA.Attacks[0] =Attacks[0];
+        UNCHA.Attacks[1] =Attacks[1];
+        UNCHA.Attacks[2] =Attacks[2];
+        UNCHA.Attacks[3] =Attacks[3];
+
+        UNCHA.Rarity =Rarity;
+        UNCHA.TitleRarityID = TitleRarityID;
+        UNCHA.CommonTitle = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].CommonTitle;
+        UNCHA.RareTitle = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].RareTitle;
+        UNCHA.LegendaryTitle = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].LegendaryTitle;
+        UNCHA.ImageLegendary = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].ImageLegendary;
+        UNCHA.ImageCommon = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].ImageCommon;
+        UNCHA.ImageRare = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].ImageRare;
+        UNCHA.WallpaperLegendary = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].WallpaperLegendary;
+        UNCHA.WallpaperCommon = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].WallpaperCommon;
+        UNCHA.WallpaperRare = CharacterManager.CM.CharacterLibrary[UNCHA.OriginalSlot].WallpaperRare;
+        UNCHA.MaxHP = MaxHP;
+        UNCHA.MaxSP = MaxSP;
+        UNCHA.BaseSpeed = BaseSpeed;
+        UNCHA.Speed = Speed;
+        if(TitleRarityID == 0)
+        {
+            UNCHA.Image = UNCHA.ImageCommon;
+            UNCHA.Titulo = UNCHA.CommonTitle;
+        }
+        if (TitleRarityID == 1)
+        {
+            UNCHA.Image = UNCHA.ImageRare;
+            UNCHA.Titulo = UNCHA.RareTitle;
+        }
+        if (TitleRarityID == 2)
+        {
+            UNCHA.Image = UNCHA.ImageLegendary;
+            UNCHA.Titulo = UNCHA.LegendaryTitle;
+        }
+
+        UNCHA.Descricao = Descricao;
+        UNCHA.ResetStatsToBase();
+
+        return UNCHA;
+    }
+}
+
 [System.Serializable]
 public class Stats
 {
@@ -686,5 +946,12 @@ public class Attack
 
 
     }
+
+}
+[System.Serializable]
+public class SerializableCharacters
+{
+    public List<SerializableCharacter> CharacterInventory = new List<SerializableCharacter>();
+    public List<SerializableCharacter> Party = new List<SerializableCharacter>();
 
 }

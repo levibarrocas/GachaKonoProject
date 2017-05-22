@@ -27,7 +27,7 @@ public class RandomBackground : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log("Img1 Alpha =" + ImgC1.GetAlpha().ToString() + "Img2 Alpha =" + ImgC2.GetAlpha().ToString());
+        //Debug.Log("Img1 Alpha =" + ImgC1.GetAlpha().ToString() + "Img2 Alpha =" + ImgC2.GetAlpha().ToString());
 
         //if (Cooldown == 0)
         //{

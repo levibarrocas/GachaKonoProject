@@ -24,7 +24,7 @@ public class PartyVisualizer : MonoBehaviour {
     private void Start()
     {
         Buttons = GetComponentsInChildren<PartySlotButton>();
-        CM = StaticReferences.CharacterManager;
+        CM = CharacterManager.CM;
     }
 
     private void Update()

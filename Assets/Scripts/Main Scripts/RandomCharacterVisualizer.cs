@@ -27,28 +27,21 @@ public class RandomCharacterVisualizer : MonoBehaviour {
         SetInitialReferences();
     }
 
-    public void GenerateRandomCharacter()
+    public void GenerateRandomCharacter(int Collection,int Price)
     {
-        if(MoneyManager.MM.SpendCredits(50))
+        if(MoneyManager.MM.SpendCredits(Price))
         {
             GeneratedCharacter = new Character();
-            GeneratedCharacterOriginal = CR.BasicRandomCharacter();
+            GeneratedCharacterOriginal = CR.BasicRandomCollectionCharacter(Collection);
             GeneratedCharacter.CloneAnotherCharacter(GeneratedCharacterOriginal);
             GeneratedCharacter.GenerateRarity();
             UpdateUI();
             FreshCharacter = true;
         }
-
     }
 
     public void Update()
     {
-
-        if (Input.GetKey(KeyCode.N))
-        {
-            GenerateRandomCharacter();
-        }
-
     }
 
     public void AddGeneratedCharacterToInventory()
@@ -100,7 +93,7 @@ public class RandomCharacterVisualizer : MonoBehaviour {
     void SetInitialReferences()
     {
         GM = GameObject.FindGameObjectWithTag("GameController");
-        CM = GM.GetComponent<CharacterManager>();
+        CM = CharacterManager.CM;
         CR = GM.GetComponent<CharacterRandomizer>();
     }
 

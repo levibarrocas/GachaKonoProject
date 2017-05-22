@@ -9,7 +9,50 @@ public class PanelWindowManager : MonoBehaviour
     [SerializeField]
     GameObject[] Panels;
     [SerializeField]
-    int SelectedPanel;
+    public int SelectedPanel;
+
+    [SerializeField]
+    GameObject BackToMain;
+
+    public static PanelWindowManager PWM;
+
+
+    private void Awake()
+    {
+        if (PWM == null)
+        {
+            PWM = this;
+        }
+        else if (PWM != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public void Start()
+    {
+        JumpTo(0);
+    } 
+
+    public void JumpTo(int N)
+    {
+        if (N != 0)
+        {
+            BackToMain.SetActive(true);
+        }else
+        {
+            BackToMain.SetActive(false);
+        }
+        SelectedPanel = N;
+        Panels[N].SetActive(true);
+        for (int i = 0; i < Panels.Length; i++)
+        {
+            if (i != N)
+            {
+                Panels[i].SetActive(false);
+            }
+        }
+    }
 
 	public void SwitchScreen(bool Direction)
     {

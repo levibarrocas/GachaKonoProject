@@ -18,7 +18,7 @@ public class BattleScreenManager : MonoBehaviour {
     {
         PlayerParty = PlayerP;
         EnemyParty = EnemyP;
-        gameObject.SetActive(true);
+        PanelWindowManager.PWM.JumpTo(5);
         for (int i = 0;i< BCB.Length; i++)
         {
             if (i < PlayerP.Ammount())

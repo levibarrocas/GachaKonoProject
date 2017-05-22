@@ -122,7 +122,13 @@ public class InventoryPanel : MonoBehaviour {
     {
         StaticReferences.CharacterManager.PlayerParty.AddToParty(StaticReferences.CharacterManager.CharacterInventory[SelectedSlot]);
         StaticReferences.CharacterManager.CharacterInventory.RemoveAt(SelectedSlot);
-        SelectSlot(SelectedSlot);
+        if (SelectedSlot > CharacterManager.CM.PlayerParty.PartyCharacters.Count)
+        {
+            SelectSlot(CharacterManager.CM.PlayerParty.PartyCharacters.Count - 1);
+        } else
+        {
+            SelectSlot(SelectedSlot);
+        }
     }
 
     public void VisualizeCharacter()
