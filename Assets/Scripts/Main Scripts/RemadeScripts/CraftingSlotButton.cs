@@ -27,7 +27,7 @@ public class CraftingSlotButton : MonoBehaviour
     public void SetInfo(Character CHA)
     {
 
-        //ThisButton.colors = CHA.Colors;
+        ThisButton.colors = CHA.Colors;
         ButtonText.text = CHA.Nome(1);
         AvatarImage.sprite = CHA.Image;
 

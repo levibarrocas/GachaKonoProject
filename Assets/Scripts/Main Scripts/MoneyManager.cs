@@ -79,7 +79,7 @@ public class MoneyManager : MonoBehaviour {
 
     public void GainDust(int AmmountGained)
     {
-        Power.Gain(AmmountGained);
+        Dust.Gain(AmmountGained);
 
     }
     public bool SpendCredits(int AmmountSpent)
@@ -90,7 +90,7 @@ public class MoneyManager : MonoBehaviour {
 
     public void GainCredits(int AmmountGained)
     {
-        Power.Gain(AmmountGained);
+        Credits.Gain(AmmountGained);
 
     }
     public void GainPower(int AmmountGained)

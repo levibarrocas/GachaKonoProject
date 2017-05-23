@@ -18,7 +18,7 @@ public class InventoryPanel : MonoBehaviour {
     int Reward = 5;
     [SerializeField]
     Text DeleteText;
-    int[] CraftingCosts = new int[15];
+    public int[] CraftingCosts = new int[15];
 
     private void Start()
     {
@@ -71,9 +71,9 @@ public class InventoryPanel : MonoBehaviour {
 
     public void SelectSlot(int SlotNumber)
     {
-
+        FillOutCosts();
         SelectedSlot = SlotNumber;
-        Reward = CraftingCosts[StaticReferences.CharacterManager.CharacterInventory[SelectedSlot].ExtraRarity];
+        Reward = CraftingCosts[CharacterManager.CM.CharacterInventory[SelectedSlot].ExtraRarity];
         //if (StaticReferences.CharacterManager.CharacterInventory[SelectedSlot].ExtraRarity == 0)
         //{
         //    Reward = 5;
@@ -111,12 +111,16 @@ public class InventoryPanel : MonoBehaviour {
 
     public void DeleteSlot()
     {
-        
-
-
         MoneyManager.MM.GainDust(Reward);
         StaticReferences.CharacterManager.CharacterInventory.RemoveAt(SelectedSlot);
-        SelectSlot(SelectedSlot);
+        if (SelectedSlot > CharacterManager.CM.PlayerParty.PartyCharacters.Count)
+        {
+            SelectSlot(CharacterManager.CM.PlayerParty.PartyCharacters.Count - 1);
+        }
+        else
+        {
+            SelectSlot(SelectedSlot);
+        }
     }
     public void AddToParty()
     {

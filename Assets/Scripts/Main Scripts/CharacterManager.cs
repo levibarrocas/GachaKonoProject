@@ -48,6 +48,7 @@ public class CharacterManager : MonoBehaviour {
         for(int i = 0;i < CharacterLibrary.Length; i++)
         {
             CharacterLibrary[i].OriginalSlot = i;
+            CharacterLibrary[i].GrabColorblock();
         }
 	}
 	
@@ -193,7 +194,7 @@ public class CharacterManager : MonoBehaviour {
         }
     }
 
-     public void AddToPartyFromLibrary(int CharacterID)
+    public void AddToPartyFromLibrary(int CharacterID)
     {
         PlayerParty.AddToParty(CharacterLibrary[CharacterID]);
     }
@@ -305,7 +306,7 @@ public class Character
     public int Level = 1;
 
     public int NextLevelCost = 5;
-    //public ColorBlock Colors;
+    public ColorBlock Colors;
 
     
     [Header("Rarity Flavours")]
@@ -421,6 +422,11 @@ public class Character
 
     }
 
+
+    public void GrabColorblock()
+    {
+        Colors = CharacterRandomizer.CR.ColorBlocks[Rarity];
+    }
     public void GenerateRarity(int ExtraPoints)
     {
         int RarityLevel1 = 70;
@@ -633,7 +639,7 @@ public class Character
         Classe = CHA.Classe;
         Level = 1;
 
-        //Colors = CHA.Colors;
+        Colors = CHA.Colors;
 
         Attacks[0] = CHA.Attacks[0];
         Attacks[1] = CHA.Attacks[1];
@@ -819,7 +825,7 @@ public class SerializableCharacter
 
         UNCHA.Descricao = Descricao;
         UNCHA.ResetStatsToBase();
-
+        UNCHA.GrabColorblock();
         return UNCHA;
     }
 }

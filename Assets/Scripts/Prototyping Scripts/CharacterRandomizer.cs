@@ -29,7 +29,19 @@ public class CharacterRandomizer : MonoBehaviour {
     // Rare with a 30% of chance. 51-80 on the random generation
     // Epic with a 15% of chance. 81-95 on the random generation
     // Legendary with a 5% of chance. 96-100 on the random generation 
+    public static CharacterRandomizer CR;
 
+    private void Awake()
+    {
+        if (CR == null)
+        {
+            CR = this;
+        }
+        else if (CM != this)
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         CM = CharacterManager.CM;
