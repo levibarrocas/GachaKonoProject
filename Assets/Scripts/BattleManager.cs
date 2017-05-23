@@ -14,7 +14,7 @@ public class BattleManager : MonoBehaviour {
     [SerializeField]
     GameObject AttackPanel;
     [SerializeField]
-    GameObject TargetPanel;
+    GameObject TargetPanelGO;
     [SerializeField]
     Attack ActiveAttack;
 
@@ -53,21 +53,42 @@ public class BattleManager : MonoBehaviour {
                     }
 
                 }
-            } 
+            }
+            if(WinLoseConditions() == 0)
+            {
+                PanelWindowManager.PWM.JumpTo(0);
+                LogText.LT.addToLogText("Player has lost a battle");
+                
+                BattleActive = false;
+            }
+            if (WinLoseConditions() == 1)
+            {
+                int Reward = 0;
+                PanelWindowManager.PWM.JumpTo(0);
+                LogText.LT.addToLogText("Player has won a battle");
+                for (int i = 0;i < EnemyParty.PartyCharacters.Count; i++)
+                {
+                    Reward += EnemyParty.PartyCharacters[i].Level * 5;
+                }
+                MoneyManager.MM.Power.Gain(Reward);
+                BattleActive = false;
+            }
         }
     }
 
     public void AttackPanelButton(int Slot)
     {
         AttackPanel.SetActive(false);
-        TargetPanel.SetActive(true);
+       
+        TargetPanelGO.SetActive(true);
 
         ActiveAttack = ActiveCharacter.Attacks[Slot];
+        TargetPanel.TP.SetUPTargetSystem(ActiveAttack.FriendlyTarget);
     }
 
     public void TargetEnemyPanelButton(int Slot)
     {
-        TargetPanel.SetActive(false);
+        TargetPanelGO.SetActive(false);
         ActiveAttack.doAttack(ActiveCharacter, EnemyParty.PartyCharacters[Slot]);
         ActiveCharacter.TurnCharge = 0;
         ActiveCharacter.Ready = false;
@@ -75,10 +96,41 @@ public class BattleManager : MonoBehaviour {
     }
     public void TargetAllyPanelButton(int Slot)
     {
-        TargetPanel.SetActive(false);
+        TargetPanelGO.SetActive(false);
         ActiveAttack.doAttack(ActiveCharacter, PlayerParty.PartyCharacters[Slot]);
         ActiveCharacter.TurnCharge = 0;
         ActiveCharacter.Ready = false;
         TurnActive = false;
+    }
+
+    public int WinLoseConditions()
+    {
+        bool PlayerAlive = false;
+        bool EnemyAlive = false;
+        for(int i = 0;i < PlayerParty.Ammount(); i++)
+        {
+            if (PlayerParty.Slot(i).HP > 0)
+            {
+                PlayerAlive = true;
+            }
+        }
+        for (int i = 0; i < EnemyParty.Ammount(); i++)
+        {
+            if (EnemyParty.Slot(i).HP > 0)
+            {
+                EnemyAlive = true;
+            }
+        }
+        if(!PlayerAlive)
+        {
+            return 0;
+        } else if (!EnemyAlive)
+        {
+            return 1;
+        } else
+        {
+            return 2;
+        }
+
     }
 }

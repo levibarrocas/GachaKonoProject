@@ -38,8 +38,5 @@ public class BattlePositionsManager : MonoBehaviour {
             }
             return true;
         }
-
-
-
     }
 }

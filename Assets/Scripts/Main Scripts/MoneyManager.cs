@@ -115,7 +115,6 @@ public class Currency
         if (Value >= AmmountSpent)
         {
             Value -= AmmountSpent;
-            SavingManager.SM.Save();
             StaticReferences.LogText.addToLogText(AmmountSpent.ToString() + " was spent from the player's" + PluralName);
             return true;
         }
@@ -130,7 +129,6 @@ public class Currency
     public void Gain(int AmmountGained)
     {
         Value += AmmountGained;
-        SavingManager.SM.Save();
         LogText.LT.addToLogText(AmmountGained.ToString() + " was added to the player's" + PluralName);
 
     }

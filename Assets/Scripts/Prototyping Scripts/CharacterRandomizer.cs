@@ -82,23 +82,30 @@ public class CharacterRandomizer : MonoBehaviour {
         if (r < 50)
         {
            int n =Random.Range(0, Commons.Count);
-            return Commons[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Commons[n]);
+            return CHA;
         }
         else if (r <80)
         {
             int n = Random.Range(0, Rares.Count);
-            return Rares[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Rares[n]);
+            return CHA;
         }
         else if (r < 95)
         {
             int n = Random.Range(0, Epics.Count);
-
-            return Epics[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Epics[n]);
+            return CHA;
         }
         else if (r <= 100)
         {
             int n = Random.Range(0, Legendaries.Count);
-            return Legendaries[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Legendaries[n]);
+            return CHA;
         } else
         {
             return Commons[0];
@@ -116,7 +123,9 @@ public class CharacterRandomizer : MonoBehaviour {
             {
                 n = Random.Range(0, Commons.Count);
             }
-            return Commons[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Commons[n]);
+            return CHA;
         }
         else if (r < 80)
         {
@@ -125,7 +134,9 @@ public class CharacterRandomizer : MonoBehaviour {
             {
                 n = Random.Range(0, Rares.Count);
             }
-            return Rares[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Rares[n]);
+            return CHA;
         }
         else if (r < 95)
         {
@@ -134,7 +145,9 @@ public class CharacterRandomizer : MonoBehaviour {
             {
                 n = Random.Range(0, Epics.Count);
             }
-            return Epics[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Epics[n]);
+            return CHA;
 
         }
         else if (r <= 100)
@@ -144,7 +157,9 @@ public class CharacterRandomizer : MonoBehaviour {
             {
                 n = Random.Range(0, Legendaries.Count);
             }
-            return Legendaries[n];
+            Character CHA = new Character();
+            CHA.CloneAnotherCharacter(Legendaries[n]);
+            return CHA;
         }
         else
         {

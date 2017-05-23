@@ -24,6 +24,17 @@ public class SavingManager : MonoBehaviour {
         LoadSave();
     }
 
+    void OnApplicationFocus(bool pauseStatus)
+    {
+        if (pauseStatus)
+        {
+        }
+        else
+        {
+            Save();
+        }
+    }
+
     public void Save()
     {
         CharacterManager.CM.SaveCharacters();

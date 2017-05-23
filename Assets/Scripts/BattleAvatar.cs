@@ -33,7 +33,7 @@ public class BattleAvatar : MonoBehaviour {
             TurnBar.value = CharacterToShow.TurnCharge;
             SPBar.value = CharacterToShow.SP;
             HPBar.value = CharacterToShow.HP;
-            if (CharacterToShow.HP < 0)
+            if (CharacterToShow.HP <= 0)
             {
                 gameObject.SetActive(false);
             }

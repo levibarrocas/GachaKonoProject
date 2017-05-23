@@ -25,6 +25,8 @@ public class CharacterManager : MonoBehaviour {
     [SerializeField]
     bool testeload;
 
+    bool Saving;
+
     public static CharacterManager CM;
 
     private void Awake()
@@ -66,7 +68,7 @@ public class CharacterManager : MonoBehaviour {
             {
                 CharacterInventory.Add(CHA);
                 LogText.LT.addToLogText("Added " + CHA.Nome() + " to the character inventory");
-                SavingManager.SM.Save();
+                //SavingManager.SM.Save();
                 return true;
 
             }
@@ -90,7 +92,7 @@ public class CharacterManager : MonoBehaviour {
                 }
 
                 LogText.LT.LogWarning("Repeated character " + CHA.Nome() + " added rewarded credits according to rarity");
-                SavingManager.SM.Save();
+                //SavingManager.SM.Save();
                 return true;
             }
         } else
@@ -111,33 +113,32 @@ public class CharacterManager : MonoBehaviour {
 
     public void SaveCharacters()
     {
-        if (File.Exists(Application.persistentDataPath + "/characters.dat"))
-        {
-            File.Delete(Application.persistentDataPath + "/characters.dat");
-        }
-        SerializableCharacters Characters = new SerializableCharacters();
-        BinaryFormatter bf = new BinaryFormatter();
-        FileStream file = File.Open(Application.persistentDataPath + "/characters.dat", FileMode.Create);
-        for (int i = 0; i < CharacterInventory.Count; i++)
-        {
-            SerializableCharacter Test = new SerializableCharacter();
-            Test.SerializeCharacter(CharacterInventory[i]);
-            Characters.CharacterInventory.Add(Test);
-        }
-        for (int i = 0; i < PlayerParty.PartyCharacters.Count; i++)
-        {
-            SerializableCharacter Test = new SerializableCharacter();
-            Test.SerializeCharacter(PlayerParty.PartyCharacters[i]);
-            Characters.Party.Add(Test);
-        }
-        bf.Serialize(file, Characters);
-        file.Close();
+            if (File.Exists(Application.persistentDataPath + "/characters.dat"))
+            {
+                File.Delete(Application.persistentDataPath + "/characters.dat");
+            }
+            SerializableCharacters Characters = new SerializableCharacters();
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/characters.dat", FileMode.Create);
+            for (int i = 0; i < CharacterInventory.Count; i++)
+            {
+                SerializableCharacter Test = new SerializableCharacter();
+                Test.SerializeCharacter(CharacterInventory[i]);
+                Characters.CharacterInventory.Add(Test);
+            }
+            for (int i = 0; i < PlayerParty.PartyCharacters.Count; i++)
+            {
+                SerializableCharacter Test = new SerializableCharacter();
+                Test.SerializeCharacter(PlayerParty.PartyCharacters[i]);
+                Characters.Party.Add(Test);
+            }
+            bf.Serialize(file, Characters);
+            file.Close();
     }
     public void LoadCharacters()
     {
         CharacterInventory.Clear();
         PlayerParty.PartyCharacters.Clear();
-        int slot = 0;
         if (File.Exists(Application.persistentDataPath + "/characters.dat"))
         {
             BinaryFormatter bf = new BinaryFormatter();
@@ -173,23 +174,7 @@ public class CharacterManager : MonoBehaviour {
     }
 
     void Update () {
-    //    TurnCharger();
-        if(Input.GetKeyDown("space"))
-        {
-            R1.RandomParty();
 
-            StaticReferences.BM.SetupBattle(R1);
-        }
-        if (testeload)
-        {
-            LoadCharacters();
-            testeload = false;
-        }
-        if (testesave)
-        {
-            SaveCharacters();
-            testesave = false;
-        }
     }
 
     public void TestBattle()
@@ -334,8 +319,12 @@ public class Character
     public Sprite WallpaperCommon;
     public Sprite WallpaperRare;
     public Sprite WallpaperLegendary;
+    public Sprite WallpaperFullCommon;
+    public Sprite WallpaperFullRare;
+    public Sprite WallpaperFullLegendary;
     public Sprite Image;
     public Sprite Wallpaper;
+    public Sprite WallpaperFull;
 
     public int Collection;
 
@@ -377,11 +366,15 @@ public class Character
         {
             TitleRarityID = 0;
             Titulo = CommonTitle;
+            Wallpaper = WallpaperCommon;
+            WallpaperFull = WallpaperFullCommon;
             Image = ImageCommon;
         }else if (r1 < 90)
         {
             TitleRarityID = 1;
             Image = ImageRare;
+            Wallpaper = WallpaperRare;
+            WallpaperFull = WallpaperFullRare;
             ExtraRarity++;
             Titulo = RareTitle;
             Stats.BaseCarisma += Random.Range(1,5);
@@ -396,6 +389,8 @@ public class Character
         {
             TitleRarityID = 2;
             Image = ImageLegendary;
+            Wallpaper = WallpaperLegendary;
+            WallpaperFull = WallpaperFullLegendary;
             ExtraRarity += 2;
             Titulo = LegendaryTitle;
             Stats.BaseCarisma += Random.Range(3, 10);
@@ -490,12 +485,14 @@ public class Character
             Titulo = CommonTitle;
             Image = ImageCommon;
             Wallpaper = WallpaperCommon;
+            WallpaperFull = WallpaperFullCommon;
         }
             else if (r1 < RarityLevel2)
             {
             TitleRarityID = 1;
             Image = ImageRare;
             Wallpaper = WallpaperRare;
+            WallpaperFull = WallpaperFullRare;
             ExtraRarity++;
                 Titulo = RareTitle;
                 Stats.BaseCarisma += Random.Range(1, 5);
@@ -511,6 +508,7 @@ public class Character
             TitleRarityID = 2;
             Image = ImageLegendary;
             Wallpaper = WallpaperLegendary;
+            WallpaperFull = WallpaperFullLegendary;
             ExtraRarity += 2;
                 Titulo = LegendaryTitle;
                 Stats.BaseCarisma += Random.Range(3, 10);
@@ -652,6 +650,9 @@ public class Character
         WallpaperLegendary = CHA.WallpaperLegendary;
         WallpaperCommon = CHA.WallpaperCommon;
         WallpaperRare = CHA.WallpaperRare;
+        WallpaperFullCommon = CHA.WallpaperFullCommon;
+        WallpaperFullRare = CHA.WallpaperFullRare;
+        WallpaperFullLegendary = CHA.WallpaperFullLegendary;
         MaxHP = CHA.MaxHP;
         MaxSP = CHA.MaxSP;
         BaseSpeed = CHA.BaseSpeed;
@@ -797,16 +798,22 @@ public class SerializableCharacter
         if(TitleRarityID == 0)
         {
             UNCHA.Image = UNCHA.ImageCommon;
+            UNCHA.WallpaperFull = UNCHA.WallpaperFullCommon;
+            UNCHA.Wallpaper = UNCHA.WallpaperCommon;
             UNCHA.Titulo = UNCHA.CommonTitle;
         }
         if (TitleRarityID == 1)
         {
             UNCHA.Image = UNCHA.ImageRare;
+            UNCHA.WallpaperFull = UNCHA.WallpaperFullRare;
+            UNCHA.Wallpaper = UNCHA.WallpaperRare;
             UNCHA.Titulo = UNCHA.RareTitle;
         }
         if (TitleRarityID == 2)
         {
             UNCHA.Image = UNCHA.ImageLegendary;
+            UNCHA.WallpaperFull = UNCHA.WallpaperFullLegendary;
+            UNCHA.Wallpaper = UNCHA.WallpaperLegendary;
             UNCHA.Titulo = UNCHA.LegendaryTitle;
         }
 
@@ -889,7 +896,7 @@ public class Attack
                 attacker.SP -= SPCost;
                 if (AttackMode == 0)
                 {
-                    for (int i = 0; i < target.Length; i++) { target[i].TakeDamage(BaseVariable); LogText.LT.addToLogText(attacker.Nome() + " attacked " + target[i].Nome() + "for " + BaseVariable + " Damage,using " + SPCost + "SP \n"); }
+                    for (int i = 0; i < target.Length; i++) { target[i].TakeDamage(BaseVariable * attacker.Stats.DynForca); LogText.LT.addToLogText(attacker.Nome() + " attacked " + target[i].Nome() + "for " + BaseVariable + " Damage,using " + SPCost + "SP \n"); }
 
                 }
                 if (AttackMode == 1)
@@ -920,16 +927,17 @@ public class Attack
             {
                 if (AttackMode == 0)
                 {
-                    target.TakeDamage(BaseVariable);
-                    LogText.LT.addToLogText(attacker.Nome() + " attacked " + target.Nome() + "for " + BaseVariable + " Damage,using " + SPCost + "SP \n");
+                    int FinalDamage = BaseVariable * attacker.Stats.DynForca;
+                    target.TakeDamage(FinalDamage);
+                    LogText.LT.addToLogText(attacker.Nome() + " attacked " + target.Nome() + "for " + FinalDamage + " Damage,using " + SPCost + "SP \n");
                     attacker.TurnCharge = 0;
                     attacker.SP -= SPCost;
                 }
                 if (AttackMode == 1)
                 {
-
-                    target.Healing(BaseVariable);
-                    LogText.LT.addToLogText(attacker.Nome() + " healed " + target.Nome() + "for " + BaseVariable + " Damage,using " + SPCost + "SP \n");
+                    int FinalResult = BaseVariable * attacker.Stats.DynCarisma;
+                    target.Healing(FinalResult);
+                    LogText.LT.addToLogText(attacker.Nome() + " healed " + target.Nome() + "for " + FinalResult + " Damage,using " + SPCost + "SP \n");
                     attacker.TurnCharge = 0;
                     attacker.SP -= SPCost;
                 }
